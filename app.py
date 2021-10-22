@@ -70,14 +70,14 @@ def hello_world(library_id):
     if request.method == 'PATCH':
         os.remove(reference_images_pickle)
         
-        patch_status = {"Flag" : "Failed"}        
+        patch_status = ["Failed"]        
         try:    
             download_azure_file(connection_string, share_name, library_id, file_name, reference_images_pickle)
-            patch_status["Flag"] = "Success"
+            patch_status = ["Success"]
         except:
             print("Unable to download new pickle file")
         
-        return patch_status        
+        return json.dumps(patch_status)       
 
     file = request.files['file'].read()
     output_json = get_result(file, reference_images_pickle)
