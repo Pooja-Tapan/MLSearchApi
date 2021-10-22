@@ -109,7 +109,7 @@ def get_result(test_image_bytes, reference_images_pickle):
         else:
             image_type=""
             
-        if sim_score<0.6:
+        if sim_score<0.85:
             pass 
         else:
             dict_ind = {"filename": str(filename), "score": str(sim_score), "type": str(image_type)}
