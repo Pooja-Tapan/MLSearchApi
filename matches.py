@@ -38,8 +38,8 @@ class MediaValetDataset(Dataset):
 
 
 # Define Macros
-num_matches = 20
-DEVICE = torch.device("cpu:0")
+num_matches = 25
+DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu'd)
 
 # Load resnet pretrained model
 model = models.resnet50(pretrained=True)
@@ -104,8 +104,11 @@ def get_result(test_image_bytes, reference_images_pickle):
         if sim_score>=0.99:        
             image_type="duplicate"
         # condition for derivative images
-        elif sim_score>=0.97:
+        elif sim_score >= 0.93:
             image_type="derivative"     
+        # condition for composite images
+        elif sim_score >= 0.85:
+            image_type="composite"    
         else:
             image_type=""
             
