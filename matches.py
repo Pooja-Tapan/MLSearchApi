@@ -106,9 +106,6 @@ def get_result(test_image_bytes, reference_images_pickle):
         # condition for derivative images
         elif sim_score >= 0.93:
             image_type="derivative"     
-        # condition for composite images
-        elif sim_score >= 0.85:
-            image_type="composite"    
         else:
             image_type=""
             
