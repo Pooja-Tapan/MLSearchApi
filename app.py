@@ -42,7 +42,7 @@ file_name = "rn50.pkl"
 app = Flask(__name__)
 
 
-@app.route('/<library_id>', methods=['GET', 'POST', 'PATCH'])
+@app.route('/<library_id>', methods=['GET', 'POST'])
 def hello_world(library_id):
     # check if reference pickle file already exists for the mentioned library_id
     # If not, download the pickle file for the first time
@@ -65,25 +65,11 @@ def hello_world(library_id):
         if 'file' not in request.files:
             print('file not uploaded')
             return
-    
-    # method for removing old pickle and downloading new pickle file
-    if request.method == 'PATCH':
-        os.remove(reference_images_pickle)
         
-        patch_status = ["Failed"]        
-        try:    
-            download_azure_file(connection_string, share_name, library_id, file_name, reference_images_pickle)
-            patch_status = ["Success"]
-        except:
-            print("Unable to download new pickle file")
-        
-        return json.dumps(patch_status)       
-
     file = request.files['file'].read()
     output_json = get_result(file, reference_images_pickle)
-
-    return json.dumps(output_json)
-
+    output_json2= predict_image(reference_images_pickle2)
+    return json.dumps(output_json,output_json2)
 
 #if __name__ == '__main__':
     #app.run(debug=True)
