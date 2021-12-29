@@ -69,6 +69,7 @@ def hello_world(library_id):
     file = request.files['file'].read()
     output_json = get_result(file, reference_images_pickle)
     output_json2= predict_image(reference_images_pickle2)
+    
     return json.dumps(output_json,output_json2)
 
 #if __name__ == '__main__':
