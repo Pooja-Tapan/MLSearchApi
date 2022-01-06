@@ -10,7 +10,6 @@ import json
 from azure.core.exceptions import ResourceNotFoundError
 from azure.storage.fileshare import ShareFileClient
 
-
 # define azure file download function
 def download_azure_file(connection_string, share_name, library_id, file_name, reference_images_pickle):
     try:
@@ -46,16 +45,16 @@ app = Flask(__name__)
 def hello_world(library_id):
     # check if reference pickle file already exists for the mentioned library_id
     # If not, download the pickle file for the first time
-    reference_images_dir = "reference_pickle" + "/" + library_id
-    os.makedirs(reference_images_dir, exist_ok=True)
+    reference_images_dir = "/index/" + library_id
+    # os.makedirs(reference_images_dir, exist_ok=True)
 
     reference_images_pickle = reference_images_dir + "/" + file_name
 
-    if not (os.path.exists(reference_images_pickle)):
-        print("Downloading Reference Pickle File For the First Time")
-        download_azure_file(connection_string, share_name, library_id, file_name, reference_images_pickle)
-    else:
-        print("Reference Pickle File Already Exists")
+    # if not (os.path.exists(reference_images_pickle)):
+        # print("Downloading Reference Pickle File For the First Time")
+        # download_azure_file(connection_string, share_name, library_id, file_name, reference_images_pickle)
+    # else:
+        # print("Reference Pickle File Already Exists")
 
     if request.method == 'GET':
         return render_template('index.html', value='hi')
