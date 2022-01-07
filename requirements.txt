@@ -7,5 +7,5 @@ pickle5==0.0.11
 urllib3==1.26.4
 azureml-core==1.37.0
 Pillow==8.2.0
-azureml-defaults==1.34.0
+azureml-defaults==1.37.0
 azure-storage-file-share==12.6.0
