@@ -2,7 +2,6 @@
 
 import os
 from torchvision import transforms, datasets
-# import pandas as pd
 import torch
 import torch.nn as nn
 from PIL import Image
@@ -12,10 +11,8 @@ from torchvision import models, transforms
 from tqdm import tqdm
 import numpy as np
 import pickle
-# import base64
 import glob
 import sys
-
 
 # Define MediaValet Dataset Class
 class MediaValetDataset(Dataset):
@@ -36,7 +33,6 @@ class MediaValetDataset(Dataset):
 
         return self.transform(image)
 
-
 # Define Macros
 num_matches = 25
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -46,7 +42,6 @@ model = models.resnet50(pretrained=True)
 model.eval()
 model = model.to(DEVICE)
 cut_model = nn.Sequential(*list(model.children())[:-1])
-
 
 # Define Get Matches Function
 def get_matches(pair_dists, selected_indicies, num_matches=10):
