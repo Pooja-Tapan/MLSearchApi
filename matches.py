@@ -36,7 +36,7 @@ class MediaValetDataset(Dataset):
 
 
 # Define Macros
-num_matches = 25
+num_matches = 50
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Load resnet pretrained model
