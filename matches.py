@@ -14,6 +14,7 @@ import pickle
 import glob
 import sys
 
+
 # Define MediaValet Dataset Class
 class MediaValetDataset(Dataset):
 
@@ -33,6 +34,7 @@ class MediaValetDataset(Dataset):
 
         return self.transform(image)
 
+
 # Define Macros
 num_matches = 25
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -43,6 +45,7 @@ model.eval()
 model = model.to(DEVICE)
 cut_model = nn.Sequential(*list(model.children())[:-1])
 
+
 # Define Get Matches Function
 def get_matches(pair_dists, selected_indicies, num_matches=10):
     k = min(num_matches, selected_indicies.shape[0])
@@ -51,7 +54,7 @@ def get_matches(pair_dists, selected_indicies, num_matches=10):
 
 
 # Get Final Result in json format
-def get_result(test_image_bytes, reference_images_pickle):
+def get_result(test_image_bytes, reference_images_pickle, diff_pickle):
     data_transform = transforms.Compose([
         transforms.Resize((224, 224)),
         transforms.ToTensor(),
@@ -71,14 +74,18 @@ def get_result(test_image_bytes, reference_images_pickle):
     test_image_tensor = torch.from_numpy(test_image_feature).float().to("cpu:0")
     test_image_tensor = test_image_tensor / torch.sqrt(torch.sum(test_image_tensor ** 2, dim=1, keepdim=True))
     test_image_tensor = test_image_tensor.to(DEVICE)
+    
+    if os.path.isfile(diff_pickle):
+        return load_and_match((test_image_tensor, diff_pickle)) + load_and_match((test_image_tensor, reference_images_pickle)) 
+    else:
+        return load_and_match((test_image_tensor, reference_images_pickle))
 
-    # Read pickle file and features of database images to get matching images
-    with open(reference_images_pickle, "rb") as f:
+def load_and_match(args):
+    (test_tensor, pkl_file) = args
+    with open(pkl_file, "rb") as f:
         (reference_images_features, reference_images_attributes) = pickle.load(f)
 
-    # print(reference_images_features.shape)
-    # print(reference_images_attributes)
-
+    
     reference_images_tensor = torch.from_numpy(reference_images_features).float().to("cpu:0")
     reference_images_tensor = reference_images_tensor / torch.sqrt(
         torch.sum(reference_images_tensor ** 2, dim=1, keepdim=True))
@@ -87,7 +94,7 @@ def get_result(test_image_bytes, reference_images_pickle):
     indicies = torch.arange(0, reference_images_tensor.shape[0]).to(DEVICE)
 
     # Get top-k matching images in JSON format
-    pair_dists = torch.einsum("nf,bf->nb", reference_images_tensor, test_image_tensor)
+    pair_dists = torch.einsum("nf,bf->nb", reference_images_tensor, test_tensor)
     matched_indicies, matched_scores = get_matches(pair_dists, indicies, num_matches=num_matches)
 
     dict_match = []

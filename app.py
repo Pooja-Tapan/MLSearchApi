@@ -9,22 +9,23 @@ import json
 
 from azure.core.exceptions import ResourceNotFoundError
 from azure.storage.fileshare import ShareFileClient
+from matches import get_result
 
-# initialize connection string and other parameters to download reference pickle file
-file_name = "rn50.pkl"
+file_name = "base.pkl"
 
 # define Flask API and return matching images
 app = Flask(__name__)
+
 
 @app.route('/<library_id>', methods=['GET', 'POST'])
 def hello_world(library_id):
     # check if reference pickle file already exists for the mentioned library_id
     # If not, download the pickle file for the first time
     reference_images_dir = "/index/" + library_id
-    # os.makedirs(reference_images_dir, exist_ok=True)
 
-    reference_images_pickle = reference_images_dir + "/" + file_name
-   
+    reference_images_pickle = reference_images_dir + "/features/" + file_name
+    diff_images_pickle = reference_images_dir + "/features/" + "diff.pkl"
+
     if request.method == 'GET':
         return render_template('index.html', value='hi')
 
@@ -33,11 +34,10 @@ def hello_world(library_id):
             return
         
     file = request.files['file'].read()
-    output_json = get_result(file, reference_images_pickle)
+    output_json = get_result(file, reference_images_pickle, diff_images_pickle)
     
     return json.dumps(output_json)
 
 #if __name__ == '__main__':
-    #app.run(debug=True)
+    # app.run(debug=True)
     #app.run(host="0.0.0.0", port=5000)
-    
