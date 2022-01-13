@@ -75,7 +75,7 @@ def get_result(test_image_bytes, reference_images_pickle, diff_pickle):
     test_image_tensor = test_image_tensor / torch.sqrt(torch.sum(test_image_tensor ** 2, dim=1, keepdim=True))
     test_image_tensor = test_image_tensor.to(DEVICE)
     
-    if os.path.isfile(diff_pickle):
+    if os.path.exists(diff_pickle):
         return load_and_match((test_image_tensor, diff_pickle)) + load_and_match((test_image_tensor, reference_images_pickle)) 
     else:
         return load_and_match((test_image_tensor, reference_images_pickle))
